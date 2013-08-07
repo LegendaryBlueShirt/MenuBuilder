@@ -1,0 +1,88 @@
+// Any text preceded by // is a comment and does nothing.
+
+[MAIN] //The name here should match the name of the file.  Allcaps optional.
+background_img = splash.png //Specify a background image.  Default is none.
+background_music = //Something to use as background music, currently blank
+default = 0 //Start the cursor on this option.
+wrap_selection = true  //Anything other than true is false, even "blah".
+select_mode = V //Horizontal or Vertical
+cursor_idle = 0 //Use cursor 0 (defined later) while idle
+cursor_travel_time = 10 //Use 0 for instant movement
+cursor_moving = 0 //While the cursor is moving
+cursor_selecting = 0 //When the user has made a choice
+//font = //TODO: This would be nice don't you think?
+//transition_type = fade //  v('_')v
+background_fade_out_delay = 0 // Delay the fade.  Use this to stop cross-fading.
+background_fade_out = 60 //Time to fade out bg
+background_fade_in_delay = 0
+background_fade_in = 60 //Time to fade in bg
+options_fade_delay = 60
+options_fade_out = 60
+options_fade_in = 60
+
+[OPTION]  //Options are ordered as they appear. Start counting from 0
+type = TextOption
+text = Do Nothing
+text_align = C //C = Center  L = Left  R = Right
+text_color = 255,255,255  //RGB color.
+location = 0,0
+action = Main //Loop back to this screen!
+font = MS Gothic
+font_size = 12 //Must be specified with font
+font_scale = 2.0 //Gives a pixelized look.
+
+[OPTION]
+type = TextOption
+text = Special Keyword
+text_align = C
+text_color = 255,255,255
+location = 0,-40
+action = Dungeon //Reserved keyword.  We say so in the code.
+font = MS Gothic
+font_size = 12
+font_scale = 2.0 //Scaling gives a pixelation effect.
+
+[OPTION]
+type = TextOption
+text = No Background Demo
+text_align = C
+text_color = 255,255,255
+location = 0,-80
+action = Nobg //Use the name of another screen to go to it.
+font = MS Gothic
+font_size = 12
+font_scale = 2.0
+
+[OPTION]
+type = TextOption
+text = String Entry Demo
+text_align = C
+text_color = 255,255,255
+location = 0,-120
+action = String
+font = MS Gothic
+font_size = 12
+font_scale = 2.0
+
+[OPTION]
+type = TextOption
+text = Quit
+text_align = C
+text_color = 255,255,255
+location = 0,-160
+action = Quit //Reserved keyword.  Ends the program.
+font = MS Gothic
+font_size = 12
+font_scale = 2.0
+
+[CURSOR] //Define a cursor.
+//img = //We will have the ability to set the cursor to an image/animation
+color = 64,192,32 //If using an image, use 255,255,255
+alpha = 0 //Start out invisible
+align = C //Center relative to position of menu item.
+size = 240,32 //Optional if using cursor_img
+blink = true //Cursor will be blinking
+blink_time = 35 //Disco!
+blink_transition = sine //Options are none, linear, sine
+blink_color = 64,192,32
+blink_alpha = 128 //Appear when blinking. Sine starts at 0 not 1.

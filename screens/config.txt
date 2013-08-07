@@ -1,0 +1,56 @@
+[CONFIG]
+background_img = splash.png //Pick something as the background.
+background_music = 
+default = 0
+wrap_selection = true
+select_mode = V
+cursor_idle = 0
+cursor_travel_time = 0
+cursor_moving = 0
+cursor_selecting = 0
+background_fade_out_delay = 60
+background_fade_out = 60
+background_fade_in_delay = 0
+background_fade_in = 0
+options_fade_delay = 0
+options_fade_out = 60
+options_fade_in = 60
+
+//[OPTION]
+//type = option_multi //And now we list options.
+//text = Language
+//text_align = C
+//text_color = 255,255,255
+//location = -50,0
+//font = MS Gothic
+//font_size = 12 //Must be specified with font
+//font_scale = 2.0 //Gives a pixelized look.
+//property = locale //Defining a property name.
+//options = English Japanese //Just a space separated list.
+//option_text_color = 192,64,64
+//option_text_align = C
+//option_text_offset = -30,-30 //Display options starting at this offset.
+//option_text_spacing = 50,0 //Arrange them horizontally.
+
+[OPTION]
+type = TextOption
+text = Back
+text_align = L
+text_color = 255,255,255
+location = -150,-190
+action = Main
+font = MS Gothic
+font_size = 12
+font_scale = 2.0
+
+[CURSOR]
+//img =
+color = 64,192,32
+alpha = 0
+align = C
+size = 240,32
+blink = true
+blink_time = 35
+blink_transition = sine
+blink_color = 64,192,32
+blink_alpha = 128

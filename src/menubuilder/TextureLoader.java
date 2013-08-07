@@ -52,9 +52,9 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.HashMap;
 
 import org.lwjgl.BufferUtils;
+import static org.lwjgl.opengl.ARBTextureRectangle.*;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
@@ -83,9 +83,6 @@ public class TextureLoader {
             false,
             ColorModel.TRANSLUCENT,
             DataBuffer.TYPE_BYTE);
-	
-    /** The table of textures that have been loaded in this loader */
-    private HashMap<String, Texture> table = new HashMap<String, Texture>();
 
     /** The colour model including alpha for the GL image */
     private ColorModel glAlphaColorModel;
@@ -139,21 +136,12 @@ public class TextureLoader {
      * @throws IOException Indicates a failure to access the resource
      */
     public Texture getTexture(String resourceName) throws IOException {
-        Texture tex = table.get(resourceName);
 
-        if (tex != null) {
-            return tex;
-        }
-
-        tex = getTexture(resourceName,
-                         GL_TEXTURE_2D, // target
+        return getTexture(resourceName,
+        		GL_TEXTURE_RECTANGLE_ARB, // target
                          GL_RGBA,     // dst pixel format
                          GL_NEAREST, // min filter (unused)
                          GL_NEAREST);
-
-        table.put(resourceName,tex);
-
-        return tex;
     }
 
     /**
@@ -195,10 +183,10 @@ public class TextureLoader {
         // convert that image into a byte buffer of texture data
         ByteBuffer textureBuffer = convertImageData(bufferedImage,texture);
 
-        if (target == GL_TEXTURE_2D) {
+        //if (target == GL_TEXTURE_2D) {
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
             glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
-        }
+        //}
 
         // produce a texture from the byte buffer
         glTexImage2D(target,
@@ -207,7 +195,7 @@ public class TextureLoader {
                       get2Fold(bufferedImage.getWidth()),
                       get2Fold(bufferedImage.getHeight()),
                       0,
-                      srcPixelFormat,
+                      GL_RGBA,
                       GL_UNSIGNED_BYTE,
                       textureBuffer );
 
@@ -219,23 +207,14 @@ public class TextureLoader {
     }
     
     public Texture getStringTexture(String input, Font style, Color color) {
-    	Texture tex = table.get(input);
 
-        if (tex != null) {
-            return tex;
-        }
-        
-        tex = getStringTexture(input,
-                         GL_TEXTURE_2D, // target
+    	return getStringTexture(input,
+        		GL_TEXTURE_RECTANGLE_ARB, // target
                          GL_RGBA,     // dst pixel format
                          GL_LINEAR, // min filter (unused)
                          GL_LINEAR,
                          style,
                          color);
-        
-        table.put(input,tex);
-        
-        return tex;
     }
     
     public Texture getStringTexture(String input,
@@ -258,10 +237,10 @@ public class TextureLoader {
     	
     	srcPixelFormat = GL_RGBA;
 
-    	if (target == GL_TEXTURE_2D) {
+    	//if (target == GL_TEXTURE_2D) {
     		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
     		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
-    	}
+    	//}
 
     	// produce a texture from the byte buffer
     	glTexImage2D(target,

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -18,8 +17,6 @@ import java.nio.ByteOrder;
 
 import org.lwjgl.opengl.GL11;
 
-import util.Coord;
-
 public class Text {
 	public enum Alignment {
 		ALIGN_LEFT,ALIGN_CENTER,ALIGN_RIGHT;
@@ -32,34 +29,24 @@ public class Text {
             ComponentColorModel.TRANSLUCENT,
             DataBuffer.TYPE_BYTE);
 	
-	public static void renderText(String input, Coord location, Alignment align) {
-		renderText(input, location.x, location.y, align);
-	}
-	
-	public static void renderText(String input, Coord location, Font style, Color color) {
-		renderText(input, location.x, location.y, style, color, Alignment.ALIGN_LEFT);
-	}
-	
-	public static void renderText(String input, Coord location, Font style, Color color, Alignment align) {
-		renderText(input, location.x, location.y, style, color, align);
-	}
-	
 	public static void renderText(String input, int x, int y, Font style, Color color) {
-		renderText(input, x, y, style, color, Alignment.ALIGN_LEFT);
+		renderText(input, x, y, style, color, Alignment.ALIGN_LEFT,1);
 	}
 	
 	public static void renderText(String input, int x, int y) {
-		renderText(input,x,y,null,null, Alignment.ALIGN_LEFT);
+		renderText(input,x,y,null,null, Alignment.ALIGN_LEFT,1);
 	}
 	public static void renderText(String input, int x, int y, Alignment align) {
-		renderText(input,x,y,null,null, align);
+		renderText(input,x,y,null,null, align,1);
 	}
 	
-	public static void renderText(String input, int x, int y, Font style, Color color, Alignment align) {
+	public static void renderText(String input, int x, int y, Font style, Color color, Alignment align, float scale) {
 		BufferedImage drawnString = makeString(input,style,color);
+		if(drawnString == null)
+			return;
 		switch(align) {
-		case ALIGN_RIGHT: x-= drawnString.getWidth(); break;
-		case ALIGN_CENTER: x-= drawnString.getWidth()/2; break;
+		case ALIGN_RIGHT: x-= drawnString.getWidth()*scale; break;
+		case ALIGN_CENTER: x-= drawnString.getWidth()/2*scale; break;
 		case ALIGN_LEFT:
 		}
 		byte[] data = ((DataBufferByte) drawnString.getRaster().getDataBuffer()).getData();
@@ -68,13 +55,12 @@ public class Text {
         imageBuffer.order(ByteOrder.nativeOrder());
         imageBuffer.put(data, 0, data.length);
         imageBuffer.flip();
+        int[] offsets = Locale.getFontOffset();
 		GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glColor3f(1, 1, 1);
-			GL11.glRasterPos2i(x, y);
-			GL11.glPixelZoom( 2, -2 );
+			GL11.glRasterPos2i(x+offsets[0], y+offsets[1]);
+			GL11.glPixelZoom( scale, -scale );
 			GL11.glDrawPixels(drawnString.getWidth(), drawnString.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
 	}
 	
@@ -90,30 +76,16 @@ public class Text {
     	int w = metrics.stringWidth(input);
     	int h = metrics.getHeight() + metrics.getMaxDescent();
     	
+    	if(w == 0 || h ==0)
+    		return null;
+    				
     	WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,w,h,4,null);
         BufferedImage texImage = new BufferedImage(glAlphaColorModel,raster,false,null);
     	g = (Graphics2D)texImage.getGraphics();
     	g.setFont(style);
     	g.setColor(color);
     	g.drawString(input, 0, metrics.getHeight());
-    	//g.drawString(input, 0, 0);
-    	//System.out.println(input+"  "+w+", "+h);
-
+    	
         return texImage;
     }
-	
-	public static void main(String[] args) throws Exception {
-
-	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    Font[] fonts = ge.getAllFonts();
-
-	    for (Font f:fonts) {
-	    	if(f.canDisplayUpTo("お") > -1) {
-	    		System.out.print(f.getFontName() + " : ");
-	    		System.out.print(f.getFamily() + " : ");
-	    		System.out.print(f.getName());
-	    		System.out.println();
-	    	}
-	    }
-	  }
 }
